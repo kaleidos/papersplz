@@ -12,3 +12,9 @@ dependencies {
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
