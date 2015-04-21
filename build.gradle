@@ -1,3 +1,33 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
+        classpath 'com.bluepapa32:gradle-watch-plugin:0.1.5'
+    }
+}
+
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'com.bluepapa32.watch'
+
+asciidoctor {
+    sourceDir 'docs'
+    outputDir "${buildDir}/docs"
+    attributes 'source-highlighter': 'coderay',
+               'toc-title'         : 'Tabla de Contenidos',
+               toc                 : 'left',
+               icons               : 'font'
+}
+
+watch {
+    asciidoctor {
+        files fileTree(dir: 'docs', include: '**/*.ad')
+        tasks 'asciidoctor'
+    }
+}
+
 apply plugin: 'groovy'
 
 repositories {
