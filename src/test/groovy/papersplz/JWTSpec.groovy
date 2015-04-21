@@ -41,10 +41,10 @@ class JWTSpec extends Specification {
             def tokenData = jwt.extractToken(token)
 
         when: 'validating it'
-            jwt.validateToken(tokenData, salt)
+            def result = jwt.validateToken(tokenData, salt)
 
         then: 'everything should be ok'
-            notThrown StatelessValidationException
+            result
     }
 
     void 'Check invalid token due salt'() {
@@ -61,10 +61,10 @@ class JWTSpec extends Specification {
             def tokenData = jwt.extractToken(token)
 
         when: 'validating it'
-            jwt.validateToken(tokenData, otherSalt)
+            def result = jwt.validateToken(tokenData, otherSalt)
 
-        then: 'an exception should be thrown'
-            thrown StatelessValidationException
+        then: 'the validation should return false'
+            result == false
     }
 
     void 'Check invalid token due bad signature'() {
@@ -81,10 +81,10 @@ class JWTSpec extends Specification {
             tokenData.header64 = 'bad header'
 
         when: 'validating it'
-            jwt.validateToken(tokenData, salt)
+            def result = jwt.validateToken(tokenData, salt)
 
-        then: 'an exception should be thrown'
-            thrown StatelessValidationException
+        then: 'the validation should return false'
+            result == false
     }
 
 }

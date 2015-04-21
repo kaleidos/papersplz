@@ -77,17 +77,18 @@ class JWT {
         return tokenData
     }
 
-    void validateToken(Map tokenData, salt = null) {
+    Boolean validateToken(Map tokenData, salt = null) {
         // Validate signature
         String expectedSignature = crypto.hash("${tokenData.header64}.${tokenData.payload64}")
 
         if (tokenData.signature != expectedSignature) {
-            throw new StatelessValidationException("Invalid token")
+            return false
         }
 
         // Check salt
         if (salt && tokenData.salt != salt) {
-            throw new StatelessValidationException("Invalid token")
+            return false
         }
+        return true
     }
 }
