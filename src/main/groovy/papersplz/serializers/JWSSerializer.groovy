@@ -20,6 +20,9 @@ class JWSSerializer implements Serializer {
     Crypto crypto
 
     JWSSerializer(String secret, Integer expirationTime = null) {
+        if (!secret) {
+            throw new RuntimeException('"secret" parameter cannot be null')
+        }
         this.crypto = new Crypto(secret)
         this.expirationTime = expirationTime
     }
