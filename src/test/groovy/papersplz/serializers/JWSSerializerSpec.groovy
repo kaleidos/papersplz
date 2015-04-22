@@ -126,4 +126,11 @@ class JWSSerializerSpec extends Specification {
         then: 'an exception should be raised'
             thrown InvalidTokenException
     }
+
+    void 'Trying to instantiate JWSSerializer without secret'() {
+        when: 'Instantiating JWSSerializer'
+            new JWSSerializer('')
+        then: 'an exception must be thrown'
+            thrown RuntimeException
+    }
 }
