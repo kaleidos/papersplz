@@ -23,7 +23,7 @@ asciidoctor {
 
 watch {
     asciidoctor {
-        files fileTree(dir: 'docs', include: '**/*.ad')
+        files fileTree(dir: 'docs', include: '**/*.adoc')
         tasks 'asciidoctor'
     }
 }

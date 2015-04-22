@@ -1,0 +1,25 @@
+= Papersplz
+
+`Papersplz` is a library to create and manage serialized data following the JWT specification.
+
+== Basic usage
+
+This is an usage example using `groovy`:
+
+[source, groovy]
+----
+import papersplz.serializers.JWSSerializer
+
+def jws = new JWSSerializer('mysupersecret', 10)  // secret and expiration time in minutes
+
+def token = jws.serialize(username: 'myusername')  // returns the token string
+def tokenData = jws.parse(token)  // returns a map with the token data
+
+if (jws.validate(tokenData)) {
+   // Success
+}
+----
+
+== Standard Support
+
+At this moment, `papersplz` supports JWS serialization using the HS256 algorithm.
