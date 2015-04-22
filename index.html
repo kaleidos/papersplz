@@ -508,6 +508,7 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toctitle">Tabla de Contenidos</div>
 <ul class="sectlevel1">
 <li><a href="#_basic_usage">Basic usage</a></li>
+<li><a href="#_standard_support">Standard Support</a></li>
 </ul>
 </div>
 </div>
@@ -527,24 +528,32 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">papersplz.JWT</span>
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">papersplz.serializers.JWSSerializer</span>
 
-<span class="keyword">def</span> jwt = <span class="keyword">new</span> JWT(<span class="string"><span class="delimiter">'</span><span class="content">mysupersecret</span><span class="delimiter">'</span></span>, <span class="integer">10</span>)  <span class="comment">// secret and expiration time in minutes</span>
+<span class="keyword">def</span> jws = <span class="keyword">new</span> JWSSerializer(<span class="string"><span class="delimiter">'</span><span class="content">mysupersecret</span><span class="delimiter">'</span></span>, <span class="integer">10</span>)  <span class="comment">// secret and expiration time in minutes</span>
 
-<span class="keyword">def</span> token = jwt.generateToken(<span class="string"><span class="delimiter">'</span><span class="content">myusername</span><span class="delimiter">'</span></span>)  <span class="comment">// returns the token string</span>
-<span class="keyword">def</span> tokenData = jwt.extractToken(token)  <span class="comment">// returns a map with the token data</span>
+<span class="keyword">def</span> token = jws.serialize(<span class="key">username</span>: <span class="string"><span class="delimiter">'</span><span class="content">myusername</span><span class="delimiter">'</span></span>)  <span class="comment">// returns the token string</span>
+<span class="keyword">def</span> tokenData = jws.parse(token)  <span class="comment">// returns a map with the token data</span>
 
-<span class="keyword">if</span> (jwt.validateToken(tokenData)) {
-   doStuffWithYourTokenData(tokenData)
+<span class="keyword">if</span> (jws.validate(tokenData)) {
+   <span class="comment">// Success</span>
 }</code></pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_standard_support">Standard Support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>At this moment, <code>papersplz</code> supports JWS serialization using the HS256 algorithm.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-04-21 10:56:59 CEST
+Last updated 2015-04-22 12:38:15 CEST
 </div>
 </div>
 </body>
