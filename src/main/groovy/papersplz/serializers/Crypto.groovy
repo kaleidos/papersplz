@@ -1,4 +1,4 @@
-package papersplz
+package papersplz.serializers
 
 import groovy.util.logging.Slf4j
 import groovy.transform.CompileStatic
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
 
 @Slf4j
 @CompileStatic
-class Crypto implements CryptoProvider {
+class Crypto {
 
     private String secret
 
