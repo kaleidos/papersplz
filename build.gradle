@@ -37,6 +37,7 @@ group = 'papersplz'
 version = '0.1.1'
 
 apply plugin: 'maven-publish'
+apply from: 'projectVariables.gradle'
 
 publishing {
     repositories {

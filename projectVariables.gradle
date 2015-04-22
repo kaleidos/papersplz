@@ -1,0 +1,5 @@
+project.ext {
+    repositoryUrl = has('repositoryUrl') ? repositoryUrl : null
+    repositoryUsername = has('repositoryUsername') ? repositoryUsername : null
+    repositoryPassword = has('repositoryPassword') ? repositoryPassword : null
+}
