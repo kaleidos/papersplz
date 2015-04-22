@@ -36,6 +36,24 @@ targetCompatibility = '1.7'
 group = 'papersplz'
 version = '0.1.0'
 
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+        maven {
+            url repositoryUrl
+            credentials {
+                username repositoryUsername
+                password repositoryPassword
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
 
 repositories {
     jcenter()
