@@ -30,6 +30,13 @@ watch {
 
 apply plugin: 'groovy'
 
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+group = 'papersplz'
+version = '0.1.0'
+
+
 repositories {
     jcenter()
 }
