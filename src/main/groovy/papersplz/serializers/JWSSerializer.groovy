@@ -1,4 +1,4 @@
-package papersplz
+package papersplz.serializers
 
 import groovy.util.logging.Slf4j
 
@@ -9,29 +9,23 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 
+import papersplz.InvalidTokenException
+import papersplz.Serializer
+
 @Slf4j
-class JWT {
-    private static final String BEARER = "Bearer "
+class JWSSerializer implements Serializer {
+    private static final String BEARER = 'Bearer '
 
     Integer expirationTime
-    CryptoProvider crypto
+    Crypto crypto
 
-    JWT(String secret, Integer expirationTime, CryptoProvider crypto = null) {
-        this.crypto = crypto ?: new Crypto(secret)
+    JWSSerializer(String secret, Integer expirationTime = null) {
+        this.crypto = new Crypto(secret)
         this.expirationTime = expirationTime
     }
 
-    String generateToken(String userName, String salt = null, Map<String,String> extraData=[:]){
-        def data = [username:userName]
-
-        if (extraData) {
-            data["extradata"] = extraData
-        }
-
-        if (salt != null) {
-            data["salt"] = salt
-        }
-
+    @Override
+    String serialize(Map data) {
         DateTimeFormatter formatter = ISODateTimeFormat.dateTime()
         data["issued_at"] = formatter.print(new DateTime())
 
@@ -39,28 +33,29 @@ class JWT {
             data["expires_at"] = formatter.print(new DateTime().plusMinutes(expirationTime))
         }
 
-        String header = new JsonBuilder([alg:"HS256", typ: "JWT"])
+        String header = new JsonBuilder([alg: 'HS256', typ: 'JWT'])
         String payload = new JsonBuilder(data).toString()
         String signature = crypto.hash("${header.bytes.encodeBase64()}.${payload.bytes.encodeBase64()}")
 
         return "${header.bytes.encodeBase64()}.${payload.bytes.encodeBase64()}.${signature}"
     }
 
-    Map extractToken(String token) {
+    @Override
+    Map parse(String token) throws InvalidTokenException {
         if (!token) {
-            log.debug "Token must be present"
-            throw new StatelessValidationException("Malformed token")
+            log.debug 'Token must be present'
+            throw new InvalidTokenException('Malformed Token')
         }
 
         if (token.startsWith(BEARER)){
             token = token.substring(BEARER.size())
         }
 
-        def (header64, payload64, signature) = token.tokenize(".")
+        def (header64, payload64, signature) = token.tokenize('.')
 
         if (header64 == null || payload64 == null || signature == null) {
-            log.debug "Token should have two points to split"
-            throw new StatelessValidationException("Malformed token")
+            log.debug 'Token should have two points to split'
+            throw new InvalidTokenException('Malformed Token')
         }
 
         // Extract the payload
@@ -68,7 +63,7 @@ class JWT {
         def payload = new String(payload64.decodeBase64())
         Map tokenData = (Map)slurper.parseText(payload)
 
-        tokenData += [
+        tokenData['_token'] = [
             header64: header64,
             payload64: payload64,
             signature: signature
@@ -77,11 +72,12 @@ class JWT {
         return tokenData
     }
 
-    Boolean validateToken(Map tokenData, salt = null) {
+    @Override
+    Boolean validate(Map tokenData, String salt) {
         // Validate signature
-        String expectedSignature = crypto.hash("${tokenData.header64}.${tokenData.payload64}")
+        String expectedSignature = crypto.hash("${tokenData['_token'].header64}.${tokenData['_token'].payload64}")
 
-        if (tokenData.signature != expectedSignature) {
+        if (tokenData['_token'].signature != expectedSignature) {
             return false
         }
 
@@ -90,5 +86,9 @@ class JWT {
             return false
         }
         return true
+    }
+
+    Boolean validate(Map tokenData) {
+        return validate(tokenData, null)
     }
 }

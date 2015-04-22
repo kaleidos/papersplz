@@ -1,4 +1,4 @@
-package papersplz
+package papersplz.serializers
 
 import spock.lang.*
 
